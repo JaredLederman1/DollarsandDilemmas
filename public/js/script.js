@@ -160,6 +160,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
+        // Add timeout to prevent hanging
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
+
         const res = await fetch(contactForm.action, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -168,18 +172,26 @@ document.addEventListener("DOMContentLoaded", () => {
             email: emailField.value.trim(),
             message: msgField.value.trim(),
           }),
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
 
         if (res.ok) {
           contactForm.style.display = "none";
           if (successMsg) successMsg.classList.add("visible");
         } else {
-          throw new Error("Server error");
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.error || "Server error");
         }
-      } catch {
-        // Fallback: show success anyway in static/demo mode
-        contactForm.style.display = "none";
-        if (successMsg) successMsg.classList.add("visible");
+      } catch (err) {
+        // Show error message to user
+        if (err.name === "AbortError") {
+          setError(msgField, "Request timed out. Please try again or email us directly.");
+        } else {
+          setError(msgField, "Failed to send message. Please try again or email us directly.");
+        }
+        console.error("Form submission error:", err);
       } finally {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -197,9 +209,10 @@ document.addEventListener("DOMContentLoaded", () => {
       const target = $(id);
       if (!target) return;
       e.preventDefault();
-      const offset = header ? header.offsetHeight + 16 : 16;
+      // Scroll to the very top for #top, otherwise offset by header height
+      const scrollTop = id === "#top" ? 0 : target.offsetTop - (header ? header.offsetHeight + 16 : 16);
       window.scrollTo({
-        top: target.offsetTop - offset,
+        top: scrollTop,
         behavior: "smooth",
       });
       // Update URL without jump

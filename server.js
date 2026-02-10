@@ -2,6 +2,13 @@ const path = require("path");
 const express = require("express");
 const nodemailer = require("nodemailer");
 
+// Load .env file if dotenv is installed (optional)
+try {
+  require("dotenv").config();
+} catch (e) {
+  // dotenv not installed, that's okay - use environment variables directly
+}
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -28,18 +35,28 @@ app.get("/contact", (_req, res) => res.sendFile(path.join(__dirname, "contact.ht
 // Without SMTP credentials the server still accepts the form and logs the
 // submission so nothing breaks during development.
 
-const RECIPIENT_EMAIL = "jared.a.lederman@gmail.com";
+const RECIPIENT_EMAIL = "jared@dollarsanddilemmas.com";
 
 let transporter = null;
 if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+  const port = parseInt(process.env.SMTP_PORT || "587", 10);
+  const isSecure = port === 465 || process.env.SMTP_SECURE === "true";
+  
   transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || "587", 10),
-    secure: process.env.SMTP_SECURE === "true",
+    port: port,
+    secure: isSecure, // true for 465, false for other ports
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
     },
+    connectionTimeout: 10000, // 10 seconds
+    socketTimeout: 10000, // 10 seconds
+    greetingTimeout: 10000, // 10 seconds
+    tls: {
+      // Do not fail on invalid certs (some providers use self-signed)
+      rejectUnauthorized: false
+    }
   });
   console.log("✓ SMTP transport configured — emails will be sent.");
 } else {
@@ -60,7 +77,8 @@ app.post("/api/contact", async (req, res) => {
 
   if (transporter) {
     try {
-      await transporter.sendMail({
+      // Add timeout to email sending
+      const emailPromise = transporter.sendMail({
         from: `"Dollars & Dilemmas Website" <${process.env.SMTP_USER}>`,
         replyTo: email,
         to: RECIPIENT_EMAIL,
@@ -74,13 +92,22 @@ app.post("/api/contact", async (req, res) => {
           <p>${message.replace(/\n/g, "<br />")}</p>
         `,
       });
+
+      // Wait max 10 seconds for email to send
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error("Email send timeout")), 10000)
+      );
+
+      await Promise.race([emailPromise, timeoutPromise]);
       console.log("   ✓ Email sent successfully.");
     } catch (err) {
       console.error("   ✗ Failed to send email:", err.message);
-      // Still return 200 — we have the data logged
+      console.error("   Full error:", err);
+      // Still return 200 — we have the data logged, but log the error
     }
   }
 
+  // Always respond to the client, even if email fails
   return res.json({ success: true });
 });
 
