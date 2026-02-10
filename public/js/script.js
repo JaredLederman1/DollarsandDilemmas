@@ -164,14 +164,20 @@ document.addEventListener("DOMContentLoaded", () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
 
+        // Use FormData for Formspree (standard form submission)
+        const formData = new FormData();
+        formData.append("name", nameField.value.trim());
+        formData.append("email", emailField.value.trim());
+        formData.append("message", msgField.value.trim());
+        // Add _replyto for Formspree to set reply-to header
+        formData.append("_replyto", emailField.value.trim());
+
         const res = await fetch(contactForm.action, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name: nameField.value.trim(),
-            email: emailField.value.trim(),
-            message: msgField.value.trim(),
-          }),
+          body: formData,
+          headers: {
+            "Accept": "application/json"
+          },
           signal: controller.signal,
         });
 
