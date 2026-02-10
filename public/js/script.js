@@ -181,16 +181,27 @@ document.addEventListener("DOMContentLoaded", () => {
           contactForm.style.display = "none";
           if (successMsg) successMsg.classList.add("visible");
         } else {
-          const errorData = await res.json().catch(() => ({}));
-          throw new Error(errorData.error || "Server error");
+          let errorMsg = "Server error";
+          try {
+            const errorData = await res.json();
+            errorMsg = errorData.error || errorMsg;
+          } catch {
+            errorMsg = `Server returned ${res.status} ${res.statusText}`;
+          }
+          throw new Error(errorMsg);
         }
       } catch (err) {
         // Show error message to user
+        let errorMessage = "Failed to send message. ";
         if (err.name === "AbortError") {
-          setError(msgField, "Request timed out. Please try again or email us directly.");
-        } else {
-          setError(msgField, "Failed to send message. Please try again or email us directly.");
+          errorMessage = "Request timed out. ";
+        } else if (err.message && err.message.includes("Failed to fetch")) {
+          errorMessage = "Unable to connect to server. ";
+        } else if (err.message) {
+          errorMessage = err.message + " ";
         }
+        errorMessage += "Please email us directly at jared@dollarsanddilemmas.com";
+        setError(msgField, errorMessage);
         console.error("Form submission error:", err);
       } finally {
         if (submitBtn) {
