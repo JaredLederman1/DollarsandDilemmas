@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ---------- Contact form (Formspree integration) ---------- */
   const contactForm = $("form.contact-form");
+  const successMsg = $("#form-success");
   
   if (contactForm) {
     // Handle Formspree success/error responses
@@ -107,10 +108,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("success") === "true") {
       contactForm.style.display = "none";
-      const successDiv = document.createElement("div");
-      successDiv.className = "form-success visible";
-      successDiv.innerHTML = "✓ &nbsp;Thank you! Your message has been sent. We'll get back to you soon.";
-      contactForm.parentNode.insertBefore(successDiv, contactForm.nextSibling);
+      if (successMsg) {
+        successMsg.style.display = "block";
+        successMsg.classList.add("visible");
+      }
     }
   }
 
