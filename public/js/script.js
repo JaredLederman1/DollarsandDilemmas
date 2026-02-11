@@ -68,13 +68,20 @@ document.addEventListener("DOMContentLoaded", () => {
     card.addEventListener("click", () => {
       const isExpanded = card.classList.contains("expanded");
 
-      // Close all other cards
+      // Close all cards first
       expandableCards.forEach((other) => {
-        if (other !== card) other.classList.remove("expanded");
+        other.classList.remove("expanded");
+        // Reset max-height on the expand body so it collapses
+        const body = other.querySelector(".card-expand");
+        if (body) body.style.maxHeight = "0";
       });
 
       // Toggle current card
-      card.classList.toggle("expanded", !isExpanded);
+      if (!isExpanded) {
+        card.classList.add("expanded");
+        const body = card.querySelector(".card-expand");
+        if (body) body.style.maxHeight = body.scrollHeight + "px";
+      }
     });
   });
 
