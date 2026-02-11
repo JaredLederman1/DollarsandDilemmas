@@ -539,11 +539,12 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.65rem;
 }
 
-/* Card icon — small inline SVG */
-.card-icon {
+/* Card number */
+.card-number {
   flex-shrink: 0;
-  width: 20px;
-  height: 20px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 0.95rem;
   color: var(--color-accent);
 }
 
