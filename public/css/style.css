@@ -11,10 +11,10 @@
   --color-text: #1e293b;
   --color-text-secondary: #475569;
   --color-text-muted: #94a3b8;
-  --color-accent: #0d9488;
-  --color-accent-dark: #0f766e;
-  --color-accent-light: #ccfbf1;
-  --color-accent-soft: rgba(13, 148, 136, 0.08);
+  --color-accent: #1e40af;
+  --color-accent-dark: #1e3a8a;
+  --color-accent-light: #dbeafe;
+  --color-accent-soft: rgba(30, 64, 175, 0.08);
   --color-navy: #0f172a;
   --color-navy-light: #1e293b;
   --color-border: #e2e8f0;
@@ -162,7 +162,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 800;
   font-size: 1.1rem;
   font-family: var(--font-heading);
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.3);
 }
 
 .logo-icon-img {
@@ -219,7 +219,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 0.5rem 1.15rem;
   border-radius: var(--radius-pill);
   margin-left: 0.5rem;
-  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.25);
+  box-shadow: 0 2px 8px rgba(30, 64, 175, 0.25);
   transition: background var(--transition-fast),
               transform 150ms ease,
               box-shadow var(--transition-fast);
@@ -228,7 +228,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-enroll:hover {
   background: var(--color-accent-dark);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.35);
 }
 
 /* Mobile nav toggle */
@@ -288,13 +288,13 @@ h1, h2, h3, h4, h5, h6 {
 .btn-primary {
   background: var(--color-accent);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(13, 148, 136, 0.3);
+  box-shadow: 0 4px 16px rgba(30, 64, 175, 0.3);
 }
 
 .btn-primary:hover {
   background: var(--color-accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(13, 148, 136, 0.35);
+  box-shadow: 0 8px 28px rgba(30, 64, 175, 0.35);
 }
 
 .btn-outline {
@@ -341,7 +341,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(13, 148, 136, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.06) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -353,7 +353,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 500px;
   height: 500px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(13, 148, 136, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(30, 64, 175, 0.04) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -446,7 +446,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, var(--color-accent), #14b8a6, #2dd4bf);
+  background: linear-gradient(90deg, var(--color-accent), #3b82f6, #60a5fa);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -526,7 +526,7 @@ h1, h2, h3, h4, h5, h6 {
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-accent), #14b8a6);
+  background: linear-gradient(90deg, var(--color-accent), #3b82f6);
   opacity: 0;
   transition: opacity var(--transition-med);
 }
@@ -534,7 +534,7 @@ h1, h2, h3, h4, h5, h6 {
 .curriculum-card:hover {
   transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
-  border-color: rgba(13, 148, 136, 0.2);
+  border-color: rgba(30, 64, 175, 0.2);
 }
 
 .curriculum-card:hover::before {
@@ -805,7 +805,7 @@ h1, h2, h3, h4, h5, h6 {
   width: 100%;
   aspect-ratio: 3 / 4;
   border-radius: var(--radius-xl);
-  background: linear-gradient(145deg, var(--color-accent-light), #e0f2fe);
+  background: linear-gradient(145deg, var(--color-accent-light), #bfdbfe);
   border: 1px solid var(--color-border);
   display: flex;
   flex-direction: column;
@@ -852,7 +852,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 2rem;
   padding: 1.5rem 1.75rem;
   background: var(--color-accent-soft);
-  border: 1px solid rgba(13, 148, 136, 0.15);
+  border: 1px solid rgba(30, 64, 175, 0.15);
   border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
@@ -918,7 +918,7 @@ h1, h2, h3, h4, h5, h6 {
 .field input:focus,
 .field textarea:focus {
   border-color: var(--color-accent);
-  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.1);
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
   background: #fff;
 }
 
@@ -941,7 +941,7 @@ h1, h2, h3, h4, h5, h6 {
 .form-success {
   padding: 1.25rem 1.5rem;
   background: var(--color-accent-light);
-  border: 1px solid rgba(13, 148, 136, 0.2);
+  border: 1px solid rgba(30, 64, 175, 0.2);
   border-radius: var(--radius-md);
   color: var(--color-accent-dark);
   font-weight: 500;
