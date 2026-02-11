@@ -90,29 +90,107 @@ document.addEventListener("DOMContentLoaded", () => {
     startAutoplay();
   }
 
-  /* ---------- Contact form (Formspree integration) ---------- */
+  /* ---------- Contact form (Formspree AJAX integration) ---------- */
   const contactForm = $("form.contact-form");
   const successMsg = $("#form-success");
   
   if (contactForm) {
-    // Handle Formspree success/error responses
-    contactForm.addEventListener("submit", (e) => {
+    contactForm.addEventListener("submit", async (e) => {
+      e.preventDefault(); // Prevent default form submission
+      
+      const nameField = $("input[name='name']", contactForm);
+      const emailField = $("input[name='email']", contactForm);
+      const msgField = $("textarea[name='message']", contactForm);
       const submitBtn = $("button[type='submit']", contactForm);
+      
+      // Helper to show errors
+      const setError = (field, msg) => {
+        if (!field) return;
+        field.classList.add("field-error");
+        const wrapper = field.closest(".field");
+        if (!wrapper) return;
+        let errEl = wrapper.querySelector(".error-text");
+        if (!errEl) {
+          errEl = document.createElement("span");
+          errEl.className = "error-text";
+          wrapper.appendChild(errEl);
+        }
+        errEl.textContent = msg;
+      };
+      
+      const clearErrors = () => {
+        const errorTexts = contactForm.querySelectorAll(".error-text");
+        errorTexts.forEach(el => el.remove());
+        const errorFields = contactForm.querySelectorAll(".field-error");
+        errorFields.forEach(field => field.classList.remove("field-error"));
+      };
+      
+      // Clear previous errors
+      clearErrors();
+      
+      // Basic validation
+      let valid = true;
+      if (!nameField?.value.trim()) {
+        valid = false;
+        setError(nameField, "Please enter your name.");
+      }
+      if (!emailField?.value.trim()) {
+        valid = false;
+        setError(emailField, "Please enter your email.");
+      }
+      if (!msgField?.value.trim()) {
+        valid = false;
+        setError(msgField, "Please enter a message.");
+      }
+      
+      if (!valid) return;
+      
+      // Disable button and show loading state
+      const originalText = submitBtn?.textContent;
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = "Sending…";
       }
-    });
-
-    // Check for Formspree success message in URL (after redirect)
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get("success") === "true") {
-      contactForm.style.display = "none";
-      if (successMsg) {
-        successMsg.style.display = "block";
-        successMsg.classList.add("visible");
+      
+      try {
+        // Create FormData for Formspree
+        const formData = new FormData(contactForm);
+        
+        // Submit to Formspree via AJAX
+        const res = await fetch(contactForm.action, {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Accept": "application/json"
+          }
+        });
+        
+        if (res.ok) {
+          // Success - hide form and show success message
+          contactForm.style.display = "none";
+          if (successMsg) {
+            successMsg.style.display = "block";
+            successMsg.classList.add("visible");
+          }
+        } else {
+          // Error response from Formspree
+          const errorData = await res.json().catch(() => ({}));
+          setError(msgField, errorData.error || "Failed to send message. Please try again.");
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+          }
+        }
+      } catch (err) {
+        // Network or other error
+        setError(msgField, "Failed to send message. Please try again or email us directly at jared@dollarsanddilemmas.com");
+        console.error("Form submission error:", err);
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalText;
+        }
       }
-    }
+    });
   }
 
   /* ---------- Smooth scroll for anchor links ---------- */
