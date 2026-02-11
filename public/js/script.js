@@ -61,6 +61,28 @@ document.addEventListener("DOMContentLoaded", () => {
     revealEls.forEach((el) => el.classList.add("in-view"));
   }
 
+  /* ---------- Curriculum accordion ---------- */
+  const accordionHeaders = $$(".accordion-header");
+
+  accordionHeaders.forEach((header) => {
+    header.addEventListener("click", () => {
+      const item = header.closest(".accordion-item");
+      const isOpen = item.classList.contains("open");
+
+      // Close all other items
+      $$(".accordion-item.open").forEach((openItem) => {
+        if (openItem !== item) {
+          openItem.classList.remove("open");
+          openItem.querySelector(".accordion-header").setAttribute("aria-expanded", "false");
+        }
+      });
+
+      // Toggle current item
+      item.classList.toggle("open", !isOpen);
+      header.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+    });
+  });
+
   /* ---------- Testimonial carousel ---------- */
   const testimonialCards = $$(".testimonial-card");
   const testimonialDots = $$(".testimonial-dot");
