@@ -61,25 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
     revealEls.forEach((el) => el.classList.add("in-view"));
   }
 
-  /* ---------- Curriculum accordion ---------- */
-  const accordionHeaders = $$(".accordion-header");
+  /* ---------- Curriculum card expand ---------- */
+  const expandableCards = $$(".curriculum-card[data-expandable]");
 
-  accordionHeaders.forEach((header) => {
-    header.addEventListener("click", () => {
-      const item = header.closest(".accordion-item");
-      const isOpen = item.classList.contains("open");
+  expandableCards.forEach((card) => {
+    card.addEventListener("click", () => {
+      const isExpanded = card.classList.contains("expanded");
 
-      // Close all other items
-      $$(".accordion-item.open").forEach((openItem) => {
-        if (openItem !== item) {
-          openItem.classList.remove("open");
-          openItem.querySelector(".accordion-header").setAttribute("aria-expanded", "false");
-        }
+      // Close all other cards
+      expandableCards.forEach((other) => {
+        if (other !== card) other.classList.remove("expanded");
       });
 
-      // Toggle current item
-      item.classList.toggle("open", !isOpen);
-      header.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+      // Toggle current card
+      card.classList.toggle("expanded", !isExpanded);
     });
   });
 
