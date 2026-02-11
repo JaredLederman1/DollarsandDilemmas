@@ -90,132 +90,28 @@ document.addEventListener("DOMContentLoaded", () => {
     startAutoplay();
   }
 
-  /* ---------- Contact form (client-side validation + async submit) ---------- */
-  const contactForm = $("form[data-contact-form]");
-  const successMsg = $("#form-success");
-
+  /* ---------- Contact form (Formspree integration) ---------- */
+  const contactForm = $("form.contact-form");
+  
   if (contactForm) {
-    contactForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const nameField = $("input[name='name']", contactForm);
-      const emailField = $("input[name='email']", contactForm);
-      const msgField = $("textarea[name='message']", contactForm);
-      let valid = true;
-
-      // Helpers
-      const clearError = (field) => {
-        if (!field) return;
-        field.classList.remove("field-error");
-        const errEl = field.closest(".field")?.querySelector(".error-text");
-        if (errEl) errEl.remove();
-      };
-
-      const setError = (field, msg) => {
-        if (!field) return;
-        field.classList.add("field-error");
-        const wrapper = field.closest(".field");
-        if (!wrapper) return;
-        let errEl = wrapper.querySelector(".error-text");
-        if (!errEl) {
-          errEl = document.createElement("span");
-          errEl.className = "error-text";
-          wrapper.appendChild(errEl);
-        }
-        errEl.textContent = msg;
-      };
-
-      // Clear previous
-      [nameField, emailField, msgField].forEach(clearError);
-
-      // Validate
-      if (!nameField?.value.trim()) {
-        valid = false;
-        setError(nameField, "Please enter your name.");
-      }
-
-      const emailVal = emailField?.value.trim() || "";
-      const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailVal) {
-        valid = false;
-        setError(emailField, "Please enter your email.");
-      } else if (!emailRe.test(emailVal)) {
-        valid = false;
-        setError(emailField, "Please enter a valid email address.");
-      }
-
-      if (!msgField?.value.trim()) {
-        valid = false;
-        setError(msgField, "Please enter a message.");
-      }
-
-      if (!valid) return;
-
-      // Submit
+    // Handle Formspree success/error responses
+    contactForm.addEventListener("submit", (e) => {
       const submitBtn = $("button[type='submit']", contactForm);
-      const originalText = submitBtn?.textContent;
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = "Sending…";
       }
-
-      try {
-        // Add timeout to prevent hanging
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout
-
-        // Use FormData for Formspree (standard form submission)
-        const formData = new FormData();
-        formData.append("name", nameField.value.trim());
-        formData.append("email", emailField.value.trim());
-        formData.append("message", msgField.value.trim());
-        // Add _replyto for Formspree to set reply-to header
-        formData.append("_replyto", emailField.value.trim());
-
-        const res = await fetch(contactForm.action, {
-          method: "POST",
-          body: formData,
-          headers: {
-            "Accept": "application/json"
-          },
-          signal: controller.signal,
-        });
-
-        clearTimeout(timeoutId);
-
-        if (res.ok) {
-          contactForm.style.display = "none";
-          if (successMsg) successMsg.classList.add("visible");
-        } else {
-          let errorMsg = "Server error";
-          try {
-            const errorData = await res.json();
-            errorMsg = errorData.error || errorMsg;
-          } catch {
-            errorMsg = `Server returned ${res.status} ${res.statusText}`;
-          }
-          throw new Error(errorMsg);
-        }
-      } catch (err) {
-        // Show error message to user
-        let errorMessage = "Failed to send message. ";
-        if (err.name === "AbortError") {
-          errorMessage = "Request timed out. ";
-        } else if (err.message && err.message.includes("Failed to fetch")) {
-          errorMessage = "Unable to connect to server. ";
-        } else if (err.message) {
-          errorMessage = err.message + " ";
-        }
-        errorMessage += "Please email us directly at jared@dollarsanddilemmas.com";
-        setError(msgField, errorMessage);
-        console.error("Form submission error:", err);
-      } finally {
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.textContent = originalText;
-        }
-      }
     });
+
+    // Check for Formspree success message in URL (after redirect)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("success") === "true") {
+      contactForm.style.display = "none";
+      const successDiv = document.createElement("div");
+      successDiv.className = "form-success visible";
+      successDiv.innerHTML = "✓ &nbsp;Thank you! Your message has been sent. We'll get back to you soon.";
+      contactForm.parentNode.insertBefore(successDiv, contactForm.nextSibling);
+    }
   }
 
   /* ---------- Smooth scroll for anchor links ---------- */
