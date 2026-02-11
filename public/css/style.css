@@ -509,7 +509,7 @@ h1, h2, h3, h4, h5, h6 {
 .curriculum-card {
   position: relative;
   background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 1.75rem 1.5rem 1.5rem;
   box-shadow: var(--shadow-sm);
@@ -520,81 +520,57 @@ h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
 }
 
-.curriculum-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-accent), #3b82f6);
-  opacity: 0;
-  transition: opacity var(--transition-med);
-}
-
 .curriculum-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-  border-color: rgba(30, 64, 175, 0.2);
-}
-
-.curriculum-card:hover::before {
-  opacity: 1;
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-accent);
 }
 
 .curriculum-card.expanded {
-  border-color: rgba(30, 64, 175, 0.25);
-  box-shadow: var(--shadow-lg);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
 }
 
-.curriculum-card.expanded::before {
-  opacity: 1;
-}
-
-/* Card icon */
-.card-icon {
-  width: 44px;
-  height: 44px;
+/* Card header: icon + title inline */
+.card-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: var(--color-accent-light);
-  border-radius: 12px;
-  margin-bottom: 1rem;
-  color: var(--color-accent);
+  gap: 0.65rem;
+  margin-bottom: 0.65rem;
 }
 
-.card-icon svg {
-  width: 22px;
-  height: 22px;
+/* Card icon — small inline SVG */
+.card-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--color-accent);
 }
 
 /* Card title */
 .curriculum-card h3 {
-  font-size: 1.05rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.02rem;
   letter-spacing: -0.01em;
+  margin: 0;
 }
 
 /* Brief description (always visible) */
 .card-brief {
   color: var(--color-text-secondary);
-  font-size: 0.88rem;
-  line-height: 1.6;
-  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.65;
+  margin-bottom: 0;
 }
 
 /* Expandable content */
 .card-expand {
   max-height: 0;
   overflow: hidden;
-  transition: max-height 0.4s var(--ease-out), margin 0.3s var(--ease-out);
-  margin-bottom: 0;
+  transition: max-height 0.4s var(--ease-out);
 }
 
 .curriculum-card.expanded .card-expand {
   max-height: 300px;
-  margin-bottom: 0.5rem;
 }
 
 .card-expand .curriculum-points {
@@ -603,7 +579,8 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  padding-top: 0.5rem;
+  padding-top: 0.85rem;
+  margin-top: 0.85rem;
   border-top: 1px solid var(--color-border-light);
 }
 
@@ -622,32 +599,6 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0.5em;
   border-radius: 50%;
   background: var(--color-accent);
-}
-
-/* Toggle link */
-.card-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: var(--color-accent);
-  transition: color var(--transition-fast);
-}
-
-.card-toggle .toggle-arrow {
-  display: inline-block;
-  transition: transform var(--transition-med);
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.curriculum-card.expanded .card-toggle .toggle-arrow {
-  transform: rotate(90deg);
-}
-
-.curriculum-card.expanded .card-toggle {
-  color: var(--color-accent-dark);
 }
 
 /* --- Testimonials --- */
